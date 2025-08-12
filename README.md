@@ -1,5 +1,4 @@
 # CUSTOMER-ANALYTICS-PROJECT
-# Customer Churn Prediction & Clustering (Stellara Academy Data Science Assignment)
 
 ## Overview
 This project analyzes customer data to identify patterns, predict churn, and group similar customers using clustering.  
