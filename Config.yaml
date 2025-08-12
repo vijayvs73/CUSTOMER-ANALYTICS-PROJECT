@@ -1,0 +1,10 @@
+import yaml
+
+config_data = {
+    "data_source": r"C:\Users\ASUS\OneDrive\Desktop\STELLARA DATASET\WA_Fn-UseC_-Telco-Customer-Churn.xlsx"
+}
+
+with open("config.yaml", "w") as file:
+    yaml.dump(config_data, file)
+
+print("config.yaml created successfully.")
