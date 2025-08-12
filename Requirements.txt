@@ -1,0 +1,8 @@
+1. pandas → data loading, cleaning, manipulation
+2. numpy → numeric operations
+3. pyyaml → read/write config.yaml
+4. matplotlib → plotting for EDA and cluster visuals
+5. seaborn → statistical visualizations
+6. scikit-learn → preprocessing, modeling, feature selection, DBSCAN, evaluation metrics
+7. xgboost → feature selection via XGBoost model
+8. openpyxl → required by pandas to read .xlsx Excel files
