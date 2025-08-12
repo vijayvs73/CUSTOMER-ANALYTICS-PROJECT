@@ -1,0 +1,13 @@
+# EDA (Univariate, Bivariate, Multivariate)
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df.hist(bins=25, figsize=(15, 10))
+plt.tight_layout()
+plt.show()
+
+sns.heatmap(df.corr(numeric_only=True), annot=True, cmap="coolwarm")
+plt.show()
+
+sns.pairplot(df.select_dtypes(include='number').iloc[:, :4])
+plt.show()
