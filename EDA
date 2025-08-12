@@ -1,0 +1,135 @@
+# STEP 1: Create config.yaml with absolute path
+import yaml
+
+config_data = {
+    "data_source": r"C:\Users\ASUS\OneDrive\Desktop\STELLARA DATASET\WA_Fn-UseC_-Telco-Customer-Churn.xlsx"
+}
+
+with open("config.yaml", "w") as file:
+    yaml.dump(config_data, file)
+
+print("config.yaml created successfully.")
+
+# STEP 2: Load configuration & dataset
+import pandas as pd
+
+with open("config.yaml", "r") as file:
+    config = yaml.safe_load(file)
+
+data_path = config["data_source"]
+df = pd.read_excel(data_path)
+
+print(" Dataset shape before cleaning:", df.shape)
+
+# STEP 3: Data Cleaning
+df = df[df.isnull().mean(axis=1) < 0.7]  # Remove >70% missing
+df.fillna(df.mean(numeric_only=True), inplace=True)  # Fill with mean
+df.drop_duplicates(inplace=True)  # Remove duplicates
+print("Data cleaned. Shape after cleaning:", df.shape)
+
+# STEP 4: EDA (Univariate, Bivariate, Multivariate)
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df.hist(bins=25, figsize=(15, 10))
+plt.tight_layout()
+plt.show()
+
+sns.heatmap(df.corr(numeric_only=True), annot=True, cmap="coolwarm")
+plt.show()
+
+sns.pairplot(df.select_dtypes(include='number').iloc[:, :4])
+plt.show()
+
+# STEP 5: Outlier Removal (IQR)
+num_df = df.select_dtypes(include='number')
+Q1 = num_df.quantile(0.25)
+Q3 = num_df.quantile(0.75)
+IQR = Q3 - Q1
+df = df[~((num_df < (Q1 - 1.5 * IQR)) | (num_df > (Q3 + 1.5 * IQR))).any(axis=1)]
+print("Outliers removed. Shape:", df.shape)
+
+# STEP 6: Scaling
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+num_df = df.select_dtypes(include='number')
+scaled = scaler.fit_transform(num_df)
+scaled_df = pd.DataFrame(scaled, columns=num_df.columns)
+df[num_df.columns] = scaled_df
+print("Data scaled")
+
+# STEP 7: Feature Selection (RandomForest, AdaBoost, XGBoost)
+from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
+from xgboost import XGBClassifier
+from sklearn.preprocessing import LabelEncoder
+
+target_column = "Churn"
+
+# Encode target
+y_raw = df[target_column]
+if y_raw.dtype == "object":
+    le = LabelEncoder()
+    y = le.fit_transform(y_raw)
+else:
+    y = y_raw.astype(int)
+
+# Features
+X = df.drop(columns=[target_column])
+X = pd.get_dummies(X, drop_first=True)
+
+# Random Forest
+rf = RandomForestClassifier()
+rf.fit(X, y)
+print("Top 5 Features (RandomForest):\n", pd.Series(rf.feature_importances_, index=X.columns).sort_values(ascending=False).head())
+
+from sklearn.impute import SimpleImputer
+import pandas as pd
+from sklearn.ensemble import AdaBoostClassifier
+
+# Create an imputer to handle missing values
+imputer = SimpleImputer(strategy='mean')  # You can choose other strategies like 'median', 'most_frequent', etc.
+
+# Fit and transform the data to handle missing values
+X_imputed = imputer.fit_transform(X)
+
+# Now we can use X_imputed in the AdaBoost model
+ada = AdaBoostClassifier()
+ada.fit(X_imputed, y)
+print("Top 5 Features (AdaBoost):\n", pd.Series(ada.feature_importances_, index=X.columns).sort_values(ascending=False).head())
+
+# XGBoost
+xgb = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss')
+xgb.fit(X, y)
+print("Top 5 Features (XGBoost):\n", pd.Series(xgb.feature_importances_, index=X.columns).sort_values(ascending=False).head())
+
+# STEP 8: Clustering (DBSCAN)
+from sklearn.cluster import DBSCAN
+import pandas as pd
+from sklearn.impute import SimpleImputer
+
+# Handle missing values using SimpleImputer
+imputer = SimpleImputer(strategy='mean')  # You can choose 'mean', 'median', 'most_frequent', or 'constant'
+X_imputed = imputer.fit_transform(X)
+
+# Now apply DBSCAN on the imputed data
+dbscan = DBSCAN(eps=0.5, min_samples=5)
+clusters = dbscan.fit_predict(X_imputed)
+df["Cluster"] = clusters
+print("DBSCAN Clustering Done. Cluster counts:\n", pd.Series(clusters).value_counts())
+
+# STEP 9: Train/Test + Evaluation
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, f1_score
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+print(f"Macro F1 Score: {f1_score(y_test, y_pred, average='macro'):.4f}")
+
+
+
