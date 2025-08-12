@@ -1,4 +1,4 @@
-# 📊 Customer Analytics Project
+# Customer Analytics Project
 
 ## Project Overview
 This project is developed as part of the **Stellara Academy Data Science Assignment**.  
