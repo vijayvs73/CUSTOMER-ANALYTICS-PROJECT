@@ -61,9 +61,9 @@ The project adheres strictly to the given requirements, including:
 ---
 
 **Results & Insights**
- -Customers were grouped into X segments based on spending score and income level.
- -High-value customers were identified for premium marketing campaigns.
- -Low-engagement customers were recognized for re-engagement strategies.
+ - Customers were grouped into X segments based on spending score and income level.
+ - High-value customers were identified for premium marketing campaigns.
+ - Low-engagement customers were recognized for re-engagement strategies.
 
 ---
 
