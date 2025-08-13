@@ -72,5 +72,17 @@ The project adheres strictly to the given requirements, including:
     ```bash
    data_source: "C:/path/to/WA_Fn-UseC_-Telco-Customer-Churn.xlsx"
 
+## License
+This project is licensed under the MIT License – feel free to use and modify it.
+
+## Author
+**Vijay V S**  
+GitHub: [vijayvs73](https://github.com/vijayvs73)
+
+## Connect with Me
+Feel free to connect with me on  
+[LinkedIn](www.linkedin.com/in/vs-vijay)
+
+
 
 
